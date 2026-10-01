@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>உங்களில் ஒருத்தி | Unagalil Oruthi – உங்கள் கூட ஒரு சகோதரி</title>
+  <meta name="description" content="உங்களில் ஒருத்தி – ஊரக மகளிர், இளம் பெண்கள் மற்றும் கிராம மக்களுக்காக அரசு திட்டங்கள், திறன் கல்வி, நிதி விழிப்புணர்வு வழங்கும் AI உதவியாளர்." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===== ACCESSIBILITY: SKIP NAV ===== -->
+<a href="#main-content" class="skip-link">முக்கிய உள்ளடக்கத்திற்கு செல்லவும்</a>
+
+<!-- ===== LANGUAGE & ACCESSIBILITY BAR ===== -->
+<div class="top-bar" role="banner">
+  <div class="top-bar-inner">
+    <div class="lang-switcher" aria-label="மொழி தேர்வு">
+      <button class="lang-btn active" data-lang="ta" onclick="setLanguage('ta')">தமிழ்</button>
+      <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+      <button class="lang-btn" data-lang="hi" onclick="setLanguage('hi')">हिन्दी</button>
+      <button class="lang-btn" data-lang="te" onclick="setLanguage('te')">తెలుగు</button>
+      <button class="lang-btn" data-lang="ml" onclick="setLanguage('ml')">മലയാളം</button>
+    </div>
+    <div class="a11y-bar">
+      <button class="a11y-btn" onclick="toggleFontSize()" title="எழுத்து அளவு மாற்று" aria-label="Font Size Toggle">🔤 A+</button>
+      <button class="a11y-btn" onclick="toggleHighContrast()" title="High Contrast" aria-label="High Contrast Mode">⬛ HC</button>
+      <button class="a11y-btn sign-lang-toggle" onclick="toggleSignMode()" title="Sign Language Mode" aria-label="Sign Language Mode" id="signModeBtn">🤟 Sign</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HEADER / NAV ===== -->
+<header class="main-header" role="navigation">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-icon" aria-hidden="true">
+        <div class="logo-glow-ring"></div>
+        <span class="logo-emoji">🌺</span>
+      </div>
+      <div class="logo-text">
+        <h1 class="logo-title" data-ta="உங்களில் ஒருத்தி" data-en="Unagalil Oruthi">உங்களில் ஒருத்தி</h1>
+        <p class="logo-tagline" data-ta="உங்கள் கூட ஒரு சகோதரி 💜" data-en="Your Sister, Always With You 💜">உங்கள் கூட ஒரு சகோதரி 💜</p>
+      </div>
+    </div>
+    <nav class="main-nav" aria-label="முக்கிய வழிசெலுத்தல்">
+      <button class="nav-btn active" onclick="showSection('home')" data-ta="முகப்பு" data-en="Home">முகப்பு</button>
+      <button class="nav-btn" onclick="showSection('schemes')" data-ta="திட்டங்கள்" data-en="Schemes">திட்டங்கள்</button>
+      <button class="nav-btn" onclick="showSection('courses')" data-ta="கல்வி" data-en="Courses">கல்வி</button>
+      <button class="nav-btn" onclick="showSection('chat')" data-ta="பேசுங்கள்" data-en="Chat">பேசுங்கள்</button>
+      <button class="nav-btn" onclick="showSection('documents')" data-ta="ஆவணங்கள்" data-en="Documents">ஆவணங்கள்</button>
+    </nav>
+    <button class="voice-fab-header" onclick="startVoiceInput()" aria-label="குரல் உதவி" title="குரல் உதவி">
+      <span class="mic-icon">🎤</span>
+      <span class="voice-ripple"></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== SIGN LANGUAGE OVERLAY ===== -->
+<div class="sign-overlay" id="signOverlay" hidden aria-live="polite">
+  <div class="sign-avatar-container">
+    <div class="sign-avatar" id="signAvatar">
+      <div class="avatar-body">
+        <div class="avatar-head"></div>
+        <div class="avatar-torso"></div>
+        <div class="avatar-arm left" id="avatarArmL"></div>
+        <div class="avatar-arm right" id="avatarArmR"></div>
+      </div>
+      <div class="sign-caption" id="signCaption">🤟 Sign Language Mode Active</div>
+    </div>
+    <button class="close-sign" onclick="toggleSignMode()">✕ Close</button>
+  </div>
+</div>
+
+<!-- ===== VOICE MODAL ===== -->
+<div class="voice-modal" id="voiceModal" hidden role="dialog" aria-modal="true" aria-label="குரல் உதவி">
+  <div class="voice-modal-inner">
+    <div class="voice-waves" id="voiceWaves">
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+    </div>
+    <p class="voice-listening-text" id="voiceListeningText" data-ta="கேட்கிறேன்... பேசுங்கள்!" data-en="Listening... Speak now!">கேட்கிறேன்... பேசுங்கள்!</p>
+    <p class="voice-transcript" id="voiceTranscript"></p>
+    <button class="voice-stop-btn" onclick="stopVoiceInput()">⏹ நிறுத்து</button>
+  </div>
+</div>
+
+<!-- ===== NOTIFICATION TOAST ===== -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main id="main-content">
+
+  <!-- ========== HOME SECTION ========== -->
+  <section class="section active" id="section-home" aria-label="முகப்பு">
+
+    <!-- Hero -->
+    <div class="hero-area">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span data-ta="🌟 AI சக்தி கொண்ட உதவியாளர்" data-en="🌟 AI-Powered Assistant">🌟 AI சக்தி கொண்ட உதவியாளர்</span>
+        </div>
+        <h2 class="hero-title">வணக்கம்! நான் <em>உங்களில் ஒருத்தி</em>…<br>உங்கள் சகோதரி! 🌺</h2>
+        <p class="hero-subtitle">அரசு திட்டங்கள் விண்ணப்பிக்க, திறன் கற்க, உரிமை அறிய — நான் உங்களுக்கு உதவுவேன். ஒரு வார்த்தை கூட படிக்கத் தெரியாமல் இருந்தாலும் பரவாயில்லை!</p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="startVoiceInput()" id="hero-voice-btn">
+            <span class="btn-icon">🎤</span>
+            <span>குரலில் பேசுங்கள்!</span>
+          </button>
+          <button class="btn-secondary" onclick="showSection('schemes')">
+            <span class="btn-icon">📋</span>
+            <span>திட்டங்கள் பாருங்கள்</span>
+          </button>
+        </div>
+        <div class="hero-trust-badges">
+          <span class="trust-badge">✅ தமிழ் / English / हिंदी</span>
+          <span class="trust-badge">✅ குரல் &amp; Sign Language</span>
+          <span class="trust-badge">✅ 100% இலவசம்</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image-wrapper">
+          <img src="assets/hero_logo.jpg" alt="உங்களில் ஒருத்தி AI உதவியாளர்" class="hero-img" />
+          <div class="hero-img-glow"></div>
+        </div>
+        <div class="floating-card fc1">
+          <span>📣</span>
+          <div>
+            <strong>புதுமை பெண்</strong>
+            <small>₹1000/மாதம் கிடைக்கும்!</small>
+          </div>
+        </div>
+        <div class="floating-card fc2">
+          <span>💰</span>
+          <div>
+            <strong>மகளிர் உரிமை தொகை</strong>
+            <small>₹1000 நேரடி கணக்கில்</small>
+          </div>
+        </div>
+        <div class="floating-card fc3">
+          <span>📚</span>
+          <div>
+            <strong>இலவச கோர்ஸ்</strong>
+            <small>50+ திறன் பயிற்சி</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <div class="banner-section">
+      <img src="assets/scheme_banner.jpg" alt="ஊரக மகளிர் திட்டங்கள்" class="banner-img" />
+      <div class="banner-overlay">
+        <p>உங்கள் கை அழுக்தோட வேல செஞ்சுட்டே — படிக்கலாம், சம்பாரிக்கலாம்! 💪</p>
+      </div>
+    </div>
+
+    <!-- Quick Action Cards -->
+    <div class="quick-actions-grid">
+      <h2 class="section-title">என்ன வேணும் உங்களுக்கு? 🌸</h2>
+      <div class="qa-cards">
+        <button class="qa-card" onclick="showSection('schemes'); speakText('திட்டங்கள் பக்கம் வரவேற்கிறோம்!')" aria-label="அரசு திட்டங்கள்">
+          <div class="qa-icon">🏛️</div>
+          <h3>அரசு திட்டங்கள்</h3>
+          <p>விண்ணப்பிக்க உதவி</p>
+          <span class="qa-arrow">→</span>
+        </button>
+        <button class="qa-card" onclick="showSection('courses'); speakText('கல்வி பக்கம் வரவேற்கிறோம்!')" aria-label="திறன் கல்வி">
+          <div class="qa-icon">📖</div>
+          <h3>திறன் கல்வி</h3>
+          <p>இலவச வீடியோ கோர்ஸ்</p>
+          <span class="qa-arrow">→</span>
+        </button>
+        <button class="qa-card" onclick="showSection('documents')" aria-label="ஆவண ஸ்கேன்">
+          <div class="qa-icon">📷</div>
+          <h3>ஆவண ஸ்கேன்</h3>
+          <p>கேமரா காட்டுங்கள்!</p>
+          <span class="qa-arrow">→</span>
+        </button>
+        <button class="qa-card" onclick="showSection('chat')" aria-label="AI உடன் பேசுங்கள்">
+          <div class="qa-icon">💬</div>
+          <h3>AI உடன் பேசுங்கள்</h3>
+          <p>சகோதரி போல் கேளுங்கள்!</p>
+          <span class="qa-arrow">→</span>
+        </button>
+        <button class="qa-card" onclick="showNotification('🔔 விரைவில் வருகிறது!', 'info')" aria-label="ஆரோக்கியம்">
+          <div class="qa-icon">🏥</div>
+          <h3>ஆரோக்கியம்</h3>
+          <p>ஊட்டச்சத்து, சுகாதாரம்</p>
+          <span class="qa-arrow">→</span>
+        </button>
+        <button class="qa-card" onclick="showNotification('💰 UPI பாதுகாப்பு கோர்ஸ் வருகிறது!', 'info')" aria-label="நிதி கல்வி">
+          <div class="qa-icon">💳</div>
+          <h3>நிதி கல்வி</h3>
+          <p>UPI, கடன், சேமிப்பு</p>
+          <span class="qa-arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Marquee Alert -->
+    <div class="alert-bar" role="alert" aria-live="polite">
+      <span class="alert-icon">🔔</span>
+      <div class="alert-ticker">
+        <span id="alertTicker">புதுமை பெண் திட்டம் — கல்லூரி மாணவிகளுக்கு ₹1000/மாதம் &nbsp;|&nbsp; மகளிர் உரிமை தொகை — ₹1000 நேரடி கணக்கில் &nbsp;|&nbsp; கலைஞர் மகளிர் உரிமை தொகை — விண்ணப்பம் தொடங்கியது &nbsp;|&nbsp; PMAY வீட்டு உதவி — விண்ணப்பிக்கலாம்! &nbsp;|&nbsp; SHG கடன் திட்டம் — வட்டியில்லா கடன் கிடைக்கும்!</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-area">
+      <div class="stat-card">
+        <div class="stat-number" data-target="47">0</div>
+        <div class="stat-label">அரசு திட்டங்கள்</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="50">0</div>
+        <div class="stat-label">இலவச கோர்ஸ்கள்</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="5">0</div>
+        <div class="stat-label">மொழிகள்</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="12000">0</div>
+        <div class="stat-label">பயனாளிகள்</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ========== SCHEMES SECTION ========== -->
+  <section class="section" id="section-schemes" aria-label="அரசு திட்டங்கள்">
+    <div class="section-header">
+      <h2>அரசு திட்டங்கள் 🏛️</h2>
+      <p>உங்களுக்கு தகுதியான திட்டங்களை கண்டுபிடியுங்கள். குரலில் கேளுங்கள்!</p>
+    </div>
+
+    <div class="scheme-filters" role="group" aria-label="திட்ட வகை வடிகட்டி">
+      <button class="filter-btn active" onclick="filterSchemes('all')">அனைத்தும்</button>
+      <button class="filter-btn" onclick="filterSchemes('education')">கல்வி</button>
+      <button class="filter-btn" onclick="filterSchemes('financial')">நிதி</button>
+      <button class="filter-btn" onclick="filterSchemes('health')">ஆரோக்கியம்</button>
+      <button class="filter-btn" onclick="filterSchemes('housing')">வீடு</button>
+      <button class="filter-btn" onclick="filterSchemes('employment')">வேலை</button>
+    </div>
+
+    <div class="schemes-grid" id="schemesGrid">
+
+      <div class="scheme-card" data-category="education" onclick="openSchemeDetail('pudhumai')">
+        <div class="scheme-card-header scheme-edu">
+          <span class="scheme-emoji">🎓</span>
+          <div class="scheme-badge">புது திட்டம்</div>
+        </div>
+        <div class="scheme-card-body">
+          <h3>புதுமை பெண் திட்டம்</h3>
+          <p>அரசு பள்ளியில் படித்து, அரசு கல்லூரியில் சேர்ந்த மாணவிகளுக்கு ₹1000 மாத உதவித் தொகை.</p>
+          <div class="scheme-meta">
+            <span class="scheme-amount">₹1,000/மாதம்</span>
+            <span class="scheme-eligibility">மாணவிகள்</span>
+          </div>
+          <button class="scheme-apply-btn" onclick="event.stopPropagation(); openApplyModal('pudhumai')">விண்ணப்பிக்க →</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" data-category="financial" onclick="openSchemeDetail('magalir')">
+        <div class="scheme-card-header scheme-fin">
+          <span class="scheme-emoji">💰</span>
+          <div class="scheme-badge">மிகவும் பிரபலம்</div>
+        </div>
+        <div class="scheme-card-body">
+          <h3>கலைஞர் மகளிர் உரிமை தொகை</h3>
+          <p>குடும்பத்தலைவியாகவுள்ள மகளிருக்கு மாதம் ₹1000 நேரடியாக வங்கி கணக்கில் வரும்.</p>
+          <div class="scheme-meta">
+            <span class="scheme-amount">₹1,000/மாதம்</span>
+            <span class="scheme-eligibility">குடும்பத்தலைவி</span>
+          </div>
+          <button class="scheme-apply-btn" onclick="event.stopPropagation(); openApplyModal('magalir')">விண்ணப்பிக்க →</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" data-category="financial" onclick="openSchemeDetail('shg')">
+        <div class="scheme-card-header scheme-fin">
+          <span class="scheme-emoji">🤝</span>
+          <div class="scheme-badge">சுய உதவிக் குழு</div>
+        </div>
+        <div class="scheme-card-body">
+          <h3>SHG — சுய உதவிக் குழு கடன்</h3>
+          <p>SHG உறுப்பினர்களுக்கு வட்டியில்லா அல்லது குறைந்த வட்டியில் ₹1 லட்சம் வரை கடன்.</p>
+          <div class="scheme-meta">
+            <span class="scheme-amount">₹1 லட்சம் வரை</span>
+            <span class="scheme-eligibility">SHG உறுப்பினர்</span>
+          </div>
+          <button class="scheme-apply-btn" onclick="event.stopPropagation(); openApplyModal('shg')">விண்ணப்பிக்க →</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" data-category="health" onclick="openSchemeDetail('moovalur')">
+        <div class="scheme-card-header scheme-health">
+          <span class="scheme-emoji">🏥</span>
+          <div class="scheme-badge">மகப்பேறு</div>
+        </div>
+        <div class="scheme-card-body">
+          <h3>மூவலூர் ராமாமிர்தம் அம்மையார் திட்டம்</h3>
+          <p>கர்ப்பிணி மற்றும் பாலூட்டும் தாய்மார்களுக்கு ₹18,000 உதவித் தொகை + ஊட்டச்சத்து கிட்.</p>
+          <div class="scheme-meta">
+            <span class="scheme-amount">₹18,000</span>
+            <span class="scheme-eligibility">தாய்மார்</span>
+          </div>
+          <button class="scheme-apply-btn" onclick="event.stopPropagation(); openApplyModal('moovalur')">விண்ணப்பிக்க →</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" data-category="housing" onclick="openSchemeDetail('pmay')">
+        <div class="scheme-card-header scheme-housing">
+          <span class="scheme-emoji">🏠</span>
+          <div class="scheme-badge">வீட்டு திட்டம்</div>
+        </div>
+        <div class="scheme-card-body">
+          <h3>PMAY — பிரதானமந்திரி ஆவாஸ் யோஜனா</h3>
+          <p>கிராமப்புற குடும்பங்களுக்கு வீடு கட்ட ₹1.20 லட்சம் மானியம். பெண் பெயரில் வீடு.</p>
+          <div class="scheme-meta">
+            <span class="scheme-amount">₹1.20 லட்சம்</span>
+            <span class="scheme-eligibility">கிராம குடும்பம்</span>
+          </div>
+          <button class="scheme-apply-btn" onclick="event.stopPropagation(); openApplyModal('pmay')">விண்ணப்பிக்க →</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" data-category="employment" onclick="openSchemeDetail('mgnrega')">
+        <div class="scheme-card-header scheme-employment">
+          <span class="scheme-emoji">👷‍♀️</span>
+          <div class="scheme-badge">வேலை உத்தரவாதம்</div>
+        </div>
+        <div class="scheme-card-body">
+          <h3>MGNREGS — 100 நாள் வேலை திட்டம்</h3>
+          <p>ஒவ்வொரு கிராமக் குடும்பத்திற்கும் 100 நாள் வேலை உத்தரவாதம். யாரும் விண்ணப்பிக்கலாம்!</p>
+          <div class="scheme-meta">
+            <span class="scheme-amount">₹220+/நாள்</span>
+            <span class="scheme-eligibility">அனைவரும்</span>
+          </div>
+          <button class="scheme-apply-btn" onclick="event.stopPropagation(); openApplyModal('mgnrega')">விண்ணப்பிக்க →</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" data-category="education" onclick="openSchemeDetail('scholarship')">
+        <div class="scheme-card-header scheme-edu">
+          <span class="scheme-emoji">🎒</span>
+          <div class="scheme-badge">SC/ST/OBC</div>
+        </div>
+        <div class="scheme-card-body">
+          <h3>BC/MBC மாணவி உதவித்தொகை</h3>
+          <p>10வது முதல் கல்லூரி வரை பயிலும் BC/MBC மாணவிகளுக்கு ஆண்டுதோறும் ₹12,000 வரை.</p>
+          <div class="scheme-meta">
+            <span class="scheme-amount">₹12,000/ஆண்டு</span>
+            <span class="scheme-eligibility">BC/MBC மாணவிகள்</span>
+          </div>
+          <button class="scheme-apply-btn" onclick="event.stopPropagation(); openApplyModal('scholarship')">விண்ணப்பிக்க →</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" data-category="employment" onclick="openSchemeDetail('mudra')">
+        <div class="scheme-card-header scheme-employment">
+          <span class="scheme-emoji">🏪</span>
+          <div class="scheme-badge">தொழில் தொடங்க</div>
+        </div>
+        <div class="scheme-card-body">
+          <h3>PM Mudra யோஜனா — சிறு தொழில் கடன்</h3>
+          <p>சிறு தொழில் தொடங்க ₹50,000 முதல் ₹10 லட்சம் வரை குறைந்த வட்டியில் கடன்.</p>
+          <div class="scheme-meta">
+            <span class="scheme-amount">₹50K–₹10L</span>
+            <span class="scheme-eligibility">தொழில் முனைவோர்</span>
+          </div>
+          <button class="scheme-apply-btn" onclick="event.stopPropagation(); openApplyModal('mudra')">விண்ணப்பிக்க →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== COURSES SECTION ========== -->
+  <section class="section" id="section-courses" aria-label="திறன் கல்வி">
+    <div class="section-header">
+      <h2>திறன் கல்வி மையம் 📚</h2>
+      <p>உங்கள் மொழியில், உங்கள் வேகத்தில் — இலவசமாக கற்றுக்கொள்ளுங்கள்!</p>
+    </div>
+
+    <div class="course-categories">
+      <button class="cat-btn active" onclick="filterCourses('all')">அனைத்தும்</button>
+      <button class="cat-btn" onclick="filterCourses('vocational')">தொழில் பயிற்சி</button>
+      <button class="cat-btn" onclick="filterCourses('digital')">டிஜிட்டல்</button>
+      <button class="cat-btn" onclick="filterCourses('health')">ஆரோக்கியம்</button>
+      <button class="cat-btn" onclick="filterCourses('academic')">கல்வி</button>
+    </div>
+
+    <div class="courses-grid" id="coursesGrid">
+
+      <div class="course-card" data-category="vocational" onclick="openCoursePlayer('tailoring')">
+        <div class="course-thumbnail tailoring-thumb">
+          <div class="play-btn-overlay"><span class="play-icon">▶</span></div>
+          <div class="course-duration">⏱ 4 மணி நேரம்</div>
+        </div>
+        <div class="course-body">
+          <span class="course-category-tag">✂️ தொழில் பயிற்சி</span>
+          <h3>தையல் &amp; டிசைனிங்</h3>
+          <p>ஆடை தைக்க கற்க, வீட்டிலேயே தொழில் தொடங்குங்கள்!</p>
+          <div class="course-meta">
+            <span>⭐ 4.8</span><span>👩 2,340 பயிற்சியாளர்கள்</span><span class="free-tag">இலவசம்!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="digital" onclick="openCoursePlayer('upi')">
+        <div class="course-thumbnail upi-thumb">
+          <div class="play-btn-overlay"><span class="play-icon">▶</span></div>
+          <div class="course-duration">⏱ 1.5 மணி நேரம்</div>
+        </div>
+        <div class="course-body">
+          <span class="course-category-tag">📱 டிஜிட்டல் கல்வி</span>
+          <h3>UPI பாதுகாப்பான பயன்பாடு</h3>
+          <p>PhonePe, GPay, Paytm — மோசடி தவிர்த்து பயன்படுத்த கற்றுக்கொள்ளுங்கள்!</p>
+          <div class="course-meta">
+            <span>⭐ 4.9</span><span>👩 5,120 பயிற்சியாளர்கள்</span><span class="free-tag">இலவசம்!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="vocational" onclick="openCoursePlayer('farming')">
+        <div class="course-thumbnail farming-thumb">
+          <div class="play-btn-overlay"><span class="play-icon">▶</span></div>
+          <div class="course-duration">⏱ 6 மணி நேரம்</div>
+        </div>
+        <div class="course-body">
+          <span class="course-category-tag">🌱 இயற்கை விவசாயம்</span>
+          <h3>இயற்கை விவசாயம் &amp; கம்போஸ்ட்</h3>
+          <p>ரசாயனம் இல்லாமல் நல்ல விளைச்சல், சிறந்த விலை பெறுங்கள்!</p>
+          <div class="course-meta">
+            <span>⭐ 4.7</span><span>👩 1,890 பயிற்சியாளர்கள்</span><span class="free-tag">இலவசம்!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="health" onclick="openCoursePlayer('nutrition')">
+        <div class="course-thumbnail nutrition-thumb">
+          <div class="play-btn-overlay"><span class="play-icon">▶</span></div>
+          <div class="course-duration">⏱ 2 மணி நேரம்</div>
+        </div>
+        <div class="course-body">
+          <span class="course-category-tag">🥗 ஆரோக்கியம்</span>
+          <h3>ஊட்டச்சத்து &amp; குழந்தை ஆரோக்கியம்</h3>
+          <p>உணவு, தாய்ப்பால், குழந்தை வளர்ச்சி — எளிமையான வழிகாட்டல்.</p>
+          <div class="course-meta">
+            <span>⭐ 4.8</span><span>👩 3,670 பயிற்சியாளர்கள்</span><span class="free-tag">இலவசம்!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="digital" onclick="openCoursePlayer('smartphone')">
+        <div class="course-thumbnail smartphone-thumb">
+          <div class="play-btn-overlay"><span class="play-icon">▶</span></div>
+          <div class="course-duration">⏱ 3 மணி நேரம்</div>
+        </div>
+        <div class="course-body">
+          <span class="course-category-tag">📱 டிஜிட்டல் கல்வி</span>
+          <h3>ஸ்மார்ட்போன் அடிப்படைகள்</h3>
+          <p>போன் ஆன் பண்ணுவது முதல் WhatsApp, YouTube வரை — படிப்படியாக!</p>
+          <div class="course-meta">
+            <span>⭐ 4.9</span><span>👩 7,230 பயிற்சியாளர்கள்</span><span class="free-tag">இலவசம்!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="academic" onclick="openCoursePlayer('tnpsc')">
+        <div class="course-thumbnail tnpsc-thumb">
+          <div class="play-btn-overlay"><span class="play-icon">▶</span></div>
+          <div class="course-duration">⏱ 20 மணி நேரம்</div>
+        </div>
+        <div class="course-body">
+          <span class="course-category-tag">📝 போட்டி தேர்வு</span>
+          <h3>TNPSC Group 4 தயாரிப்பு</h3>
+          <p>அரசு வேலை வாய்ப்புக்கு! தமிழ், GK, மாத்ஸ் — முழு பயிற்சி.</p>
+          <div class="course-meta">
+            <span>⭐ 4.6</span><span>👩 4,560 பயிற்சியாளர்கள்</span><span class="free-tag">இலவசம்!</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== CHAT SECTION ========== -->
+  <section class="section" id="section-chat" aria-label="AI சகோதரியுடன் பேசுங்கள்">
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-avatar-wrap">
+          <div class="chat-avatar-icon">🌺</div>
+          <div class="chat-avatar-pulse"></div>
+        </div>
+        <div class="chat-header-text">
+          <h2>உங்களில் ஒருத்தி</h2>
+          <span class="online-badge">🟢 ஆன்லைன் — உதவ தயாராக இருக்கிறேன்!</span>
+        </div>
+        <button class="voice-chat-btn" onclick="startVoiceInput()" title="குரல் உரையாடல்">🎤</button>
+      </div>
+
+      <div class="chat-messages" id="chatMessages" aria-live="polite" aria-label="உரையாடல் வரலாறு">
+        <div class="chat-msg ai-msg">
+          <div class="msg-avatar">🌺</div>
+          <div class="msg-bubble">
+            <p>வணக்கம் அக்கா! நான் உங்களில் ஒருத்தி 💜 உங்களுக்கு என்ன உதவி வேணும்? அரசு திட்டம் கேக்கணுமா, ஏதாவது கற்கணுமா, இல்லே வெறும் பேசணுமா — சொல்லுங்க!</p>
+            <div class="msg-time">இப்போதே</div>
+          </div>
+        </div>
+        <div class="chat-quick-replies" id="chatQuickReplies">
+          <button class="quick-reply" onclick="sendMessage('புதுமை பெண் திட்டம் பத்தி சொல்லுங்க')">📋 புதுமை பெண் திட்டம்</button>
+          <button class="quick-reply" onclick="sendMessage('UPI எப்படி பயன்படுத்தணும்?')">💳 UPI பயன்பாடு</button>
+          <button class="quick-reply" onclick="sendMessage('SHG கடன் எப்படி கேக்கணும்?')">🤝 SHG கடன்</button>
+          <button class="quick-reply" onclick="sendMessage('TNPSC எப்படி படிக்கணும்?')">📝 TNPSC படிப்பு</button>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <button class="chat-camera-btn" onclick="showSection('documents')" title="ஆவணம் காட்டு" aria-label="ஆவணம் அப்லோட்">📷</button>
+        <input type="text" class="chat-input" id="chatInput" placeholder="இங்க தட்டச்சு செய்யுங்கள்... அல்லது 🎤 மைக் அழுத்துங்கள்" aria-label="சாட் இன்புட்" onkeydown="if(event.key==='Enter') sendMessage()" />
+        <button class="chat-voice-btn" onclick="startVoiceInput()" title="குரலில் பேசுங்கள்" aria-label="குரல் உள்ளீடு">🎤</button>
+        <button class="chat-send-btn" onclick="sendMessage()" aria-label="அனுப்பு">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DOCUMENTS SECTION ========== -->
+  <section class="section" id="section-documents" aria-label="ஆவண ஸ்கேன்">
+    <div class="section-header">
+      <h2>ஆவண ஸ்கேன் &amp; திட்ட பொருத்தம் 📷</h2>
+      <p>உங்கள் ஆவணத்தை காட்டுங்கள் — எந்த திட்டங்களுக்கு தகுதி என்று நான் சொல்வேன்!</p>
+    </div>
+
+    <div class="doc-upload-area" id="docUploadArea" onclick="triggerDocUpload()" onkeydown="if(event.key==='Enter') triggerDocUpload()" role="button" tabindex="0" aria-label="ஆவணம் அப்லோட் அல்லது கேமரா">
+      <input type="file" id="docFileInput" accept="image/*" capture="environment" hidden onchange="processDocument(event)" />
+      <div class="doc-upload-icon">📷</div>
+      <h3>ஆவணத்தை இங்கே போடுங்கள் / கேமரா திறங்கள்</h3>
+      <p>ஆதார் கார்டு, ரேஷன் கார்டு, மார்க் ஷீட், வருமான சான்றிதழ் — எதை வேணும்னாலும்!</p>
+      <div class="doc-types">
+        <span class="doc-type-tag">🪪 ஆதார்</span>
+        <span class="doc-type-tag">🏠 ரேஷன் கார்டு</span>
+        <span class="doc-type-tag">📄 மார்க் ஷீட்</span>
+        <span class="doc-type-tag">💰 வருமான சான்று</span>
+        <span class="doc-type-tag">🏦 வங்கி பாஸ்புக்</span>
+      </div>
+    </div>
+
+    <div class="doc-results" id="docResults" hidden>
+      <div class="doc-preview-area">
+        <img id="docPreviewImg" src="" alt="அப்லோட் செய்த ஆவணம்" class="doc-preview-img" />
+        <div class="doc-analyzing-overlay" id="docAnalyzing">
+          <div class="analyzing-spinner"></div>
+          <p>ஆவணம் படிக்கிறேன்...</p>
+        </div>
+      </div>
+      <div class="doc-matched-schemes" id="docMatchedSchemes"></div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ===== SCHEME DETAIL MODAL ===== -->
+<div class="modal-overlay" id="schemeModal" hidden role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('schemeModal')" aria-label="மூடு">✕</button>
+    <div id="schemeModalContent"></div>
+  </div>
+</div>
+
+<!-- ===== APPLY MODAL ===== -->
+<div class="modal-overlay" id="applyModal" hidden role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('applyModal')" aria-label="மூடு">✕</button>
+    <div id="applyModalContent"></div>
+  </div>
+</div>
+
+<!-- ===== COURSE PLAYER MODAL ===== -->
+<div class="modal-overlay" id="courseModal" hidden role="dialog" aria-modal="true">
+  <div class="modal-box modal-wide">
+    <button class="modal-close" onclick="closeModal('courseModal')" aria-label="மூடு">✕</button>
+    <div id="courseModalContent"></div>
+  </div>
+</div>
+
+<!-- ===== BOTTOM NAV (MOBILE) ===== -->
+<nav class="bottom-nav" aria-label="கீழே வழிசெலுத்தல்">
+  <button class="bnav-btn active" onclick="showSection('home')" id="bnav-home">
+    <span class="bnav-icon">🏠</span>
+    <span class="bnav-label">முகப்பு</span>
+  </button>
+  <button class="bnav-btn" onclick="showSection('schemes')" id="bnav-schemes">
+    <span class="bnav-icon">🏛️</span>
+    <span class="bnav-label">திட்டங்கள்</span>
+  </button>
+  <button class="bnav-btn bnav-center-btn" onclick="startVoiceInput()" id="bnav-voice">
+    <span class="bnav-icon bnav-mic">🎤</span>
+  </button>
+  <button class="bnav-btn" onclick="showSection('courses')" id="bnav-courses">
+    <span class="bnav-icon">📚</span>
+    <span class="bnav-label">கல்வி</span>
+  </button>
+  <button class="bnav-btn" onclick="showSection('chat')" id="bnav-chat">
+    <span class="bnav-icon">💬</span>
+    <span class="bnav-label">பேசுங்கள்</span>
+  </button>
+</nav>
+
+<!-- ===== FLOATING VOICE BUTTON ===== -->
+<button class="voice-fab" onclick="startVoiceInput()" aria-label="குரல் உதவி" title="குரல் உதவி - குரலில் கேளுங்கள்!">
+  <span class="fab-icon">🎤</span>
+  <div class="fab-pulse"></div>
+  <div class="fab-pulse delay"></div>
+</button>
+
+<script src="app.js"></script>
+</body>
+</html>
